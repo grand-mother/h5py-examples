@@ -4,7 +4,7 @@ import h5py
 import numpy
 
 # The following example illustrates how annotations can be added to an HDF5
-# dataset. Let use a dummy array of positions for this prurpose
+# dataset. Let use a dummy array of positions for this purpose
 positions = numpy.eye(3, dtype='f8')
 
 

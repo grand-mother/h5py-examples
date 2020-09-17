@@ -9,3 +9,6 @@
 
 - [examples/attributes.py](examples/attributes.py) illustrates how attributes
   can be used in order to annotate HDF5 data.
+
+- [examples/units.py](examples/units.py) illustrates how data can be wrapped
+  with units using the [Pint](https://pint.readthedocs.io/en/stable) package.
