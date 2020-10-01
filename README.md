@@ -12,3 +12,6 @@
 
 - [examples/units.py](examples/units.py) illustrates how data can be wrapped
   with units using the [Pint](https://pint.readthedocs.io/en/stable) package.
+
+- [examples/dataclass.py](examples/dataclass.py) illustrates how dataclasses
+  could be serialized to HDF5 files.
