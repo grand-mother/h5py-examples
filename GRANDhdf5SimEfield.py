@@ -80,61 +80,22 @@ SimEfield_DetectorInfo_dtype =np.dtype  ([('det_id', 'S20'),         #AntenaID: 
 
 
 #Run Level
-def SimEfieldAddRunInfo(filehandle, RunID,SimEfield_RunInfo=None ):
+def SimEfieldAddRunInfo(filehandle, RunID, SimEfield_RunInfo=None ):
 
-    #check if "Run_"+str(RunID)+"/SimEfield_RunInfo" already exist. If it does, give an error (or handle overwriting with an optional parameter).
     node="Run_"+str(RunID)+"/SimEfield_RunInfo"
-    exists= node in filehandle
-    #if fset exist in filehandle, exit as only one EventInfo is allowed per event
-    #if dset exists and is accesible
-    if exists and filehandle:
-        print("SimEfieldAddRunInfo: already exists, not updated",node)
-        return filehandle[node]
-    #
-    elif filehandle: #dset does not exists
-        if(type(SimEfield_RunInfo)==type(None)):
-            #create an empty instance for Event Level
-            SimEfield_RunInfo= np.zeros(1,SimEfield_RunInfo_dtype)
-        #Put it on the file
-        SimEfield_RunInfo_data=filehandle.create_dataset(node, data=SimEfield_RunInfo) #there will be only one element of this
-        return SimEfield_RunInfo_data
-    else:
-        print("SimEfieldAddRunInfo:Could not access filehandle")
-        return None
 
-def SimEfieldAddRunIndex(filehandle, RunID,SimEfield_RunIndex=None):
-    #
-    #check if "Run_"+str(RunID)+"/SimEfield_RunIndex" exists, if it does, give an error (or handle overwriting with an optional parameter)
+    SimEfield_RunInfo_data= ghdf5.AddToInfo(filehandle, node, SimEfield_RunInfo_dtype,SimEfield_RunInfo )
+
+    return SimEfield_RunInfo_data
+
+
+def SimEfieldAddRunIndex(filehandle, RunID, SimEfield_RunIndex=None):
+
     node="Run_"+str(RunID)+"/SimEfield_RunIndex"
-    exists = node in filehandle
-    #
-    if(type(SimEfield_RunIndex)==type(None)):
-      #create empty instance for RunIndex table, if none is provided
-      SimEfield_RunIndex= np.zeros(1,SimEfield_RunIndex_dtype)
-    #
-    #if dset exists and is accesible
-    if exists and filehandle:
-      #get the DetectorID and check if it exists already on the dataset
-      EventID=SimEfield_RunIndex['evt_id']
-      dset=filehandle[node]
-      item_index = np.where(dset['evt_id']==EventID)
-      #print(item_index,len(item_index),DetectorID,item_index[0])
-      if item_index==[]:
-        print("SimEfieldAddRunIndex: EventID already exists, can not continue")
-        return None
-      else:
-        ghdf5.AppendRowToDataset(dset, SimEfield_RunIndex)
-        item_index = np.where(dset['evt_id']==EventID)
-        return dset, item_index[0][0]
 
-    elif filehandle: #dset does not exists
-      #Put it on the file
-      SimEfield_RunIndex_data=filehandle.create_dataset(node, data=SimEfield_RunIndex,maxshape=(None,)) #there will many events, so we are making it extensible
-      return SimEfield_RunIndex_data,0
+    SimEfield_RunIndex_data, item_index = ghdf5.AddToIndex(filehandle, node, SimEfield_RunIndex_dtype, 'evt_id',SimEfield_RunIndex)
 
-    else: #file is not accesible
-      print("SimEfieldAddRunIndex:Could not access filehandle")
-      return None
+    return SimEfield_RunIndex_data, item_index
 
 #this is the function that compiles the information of the event that will go to the RunIndex
 def SimEfieldCompileRunIndex(filehandle, RunID, EventID):
@@ -161,59 +122,21 @@ def SimEfieldCompileRunIndex(filehandle, RunID, EventID):
 #Event Level
 def SimEfieldAddEventInfo(filehandle, RunID, EventID, SimEfield_EventInfo=None):
     #
-    #check if "Run_"+str(RunID)+"/"+"Event_"+str(EventID)+"/SimEfield_EventInfo" already exist. If it does, give an error (or handle overwriting with an optional parameter).
     node="Run_"+str(RunID)+"/"+"Event_"+str(EventID)+"/SimEfield_EventInfo"
-    exists= node in filehandle
-    #if fset exist in filehandle, exit as only one EventInfo is allowed per event
-    #if dset exists and is accesible
-    if exists and filehandle:
-        print("SimEfieldAddEventInfo: already exists, not updated",node)
-        return filehandle[node]
-    #
-    elif filehandle: #dset does not exists
-        if(type(SimEfield_EventInfo)==type(None)):
-            #create an empty instance for Event Level
-            SimEfield_EventInfo= np.zeros(1,SimEfield_EventInfo_dtype)
-        #Put it on the file
-        SimEfield_EventInfo_data=filehandle.create_dataset(node, data=SimEfield_EventInfo) #there will be only one of this
-        return SimEfield_EventInfo_data
-    else:
-        print("SimEfieldAddEventInfo:Could not access filehandle")
-        return None
+
+    SimEfield_EventInfo_data= ghdf5.AddToInfo(filehandle, node, SimEfield_EventInfo_dtype,SimEfield_EventInfo )
+
+    return SimEfield_EventInfo_data
 
 
 def SimEfieldAddDetectorInfo(filehandle, RunID, EventID, SimEfield_DetectorInfo=None):
     #
-    #check if "Run_"+str(RunID)+"/"+"Event_"+str(EventID)+"/SimEfield_DetectorInfo"
     node="Run_"+str(RunID)+"/"+"Event_"+str(EventID)+"/SimEfield_DetectorInfo"
-    exists = node in filehandle
-    #
-    if(type(SimEfield_DetectorInfo)==type(None)):
-      #create empty instance for Detector info table, if none is provided
-      SimEfield_DetectorInfo= np.zeros(1,SimEfield_DetectorInfo_dtype)
-    #
-    #if dset exists and is accesible
-    if exists and filehandle:
-      #get the DetectorID and check if it exists already on the dataset
-      DetectorID=SimEfield_DetectorInfo['det_id']
-      dset=filehandle[node]
-      item_index = np.where(dset['det_id']==DetectorID)
-      if item_index==[]:
-        print("SimEfieldAddDetectorInfo: DetectorID already exists, can not continue")
-        return None
-      else:
-        ghdf5.AppendRowToDataset(dset, SimEfield_DetectorInfo)
-        item_index = np.where(dset['det_id']==DetectorID)
-        return dset, item_index[0][0]
 
-    elif filehandle: #dset does not exists
-      #Put it on the file
-      SimEfield_DetectorInfo_data=filehandle.create_dataset(node, data=SimEfield_DetectorInfo,maxshape=(None,)) #there will many detectors, so we are making it extensible
-      return SimEfield_DetectorInfo_data,0
+    SimEfield_DetectorInfo_data, item_index = ghdf5.AddToIndex(filehandle, node, SimEfield_DetectorInfo_dtype, 'det_id', SimEfield_DetectorInfo)
 
-    else: #file is not accesible
-      print("SimEfieldAddDetectorInfo:Could not access filehandle")
-      return None
+    return SimEfield_DetectorInfo_data, item_index
+
 
 
 #trace level

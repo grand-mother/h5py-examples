@@ -29,6 +29,62 @@ import GRANDhdf5Utilities as ghdf5
 #print(type(SimEfield_DetectorInfo_data[0,'det_id'])) #so, this gives me access to the 'det_id' field of record 0
 #print(SimEfield_DetectorInfo_data[0])
 
+#Run Level
+def AddToInfo(filehandle, node, Info_dtype,Info=None ):
+
+    #check if node already exist. If it does, give an error (or handle overwriting with an optional parameter).
+    exists= node in filehandle
+    #if fset exist in filehandle, exit as only one EventInfo is allowed per event
+    #if dset exists and is accesible
+    if exists and filehandle:
+        print("AddToInfo: already exists, not updated",node)
+        return filehandle[node]
+    #
+    elif filehandle: #dset does not exists
+        if(type(Info)==type(None)):
+            #create an empty instance for Event Level
+            Info= np.zeros(1,Info_dtype)
+        #Put it on the file
+        Info_data=filehandle.create_dataset(node, data=Info) #there will be only one element of this
+        return Info_data
+    else:
+        print("AddToInfo:Could not access filehandle")
+        return None
+
+def AddToIndex(filehandle, node, Data_dtype,IndexField, Data=None):
+    #
+    #check if node exists, if it does, give an error (or handle overwriting with an optional parameter)
+    exists = node in filehandle
+    #
+    if(type(Data)==type(None)):
+      #create empty instance for the Index table, if none is provided
+      Data= np.zeros(1,Data_dtype)
+    #
+    #if dset exists and is accesible
+    if exists and filehandle:
+      #get the DetectorID and check if it exists already on the dataset
+      EventID=Data[IndexField]
+      dset=filehandle[node]
+      item_index = np.where(dset[IndexField]==EventID)
+      #print(item_index,len(item_index),DetectorID,item_index[0])
+      if item_index==[]:
+        print("AddToIndex: EventID already exists, can not continue")
+        return None, None
+      else:
+        AppendRowToDataset(dset, Data)
+        item_index = np.where(dset[IndexField]==EventID)
+        return dset, item_index[0][0]
+
+    elif filehandle: #dset does not exists
+      #Put it on the file
+      Index_data=filehandle.create_dataset(node, data=Data,maxshape=(None,)) #there will many events, so we are making it extensible
+      return Index_data,0
+
+    else: #file is not accesible
+      print("AddToIndex:Could not access filehandle")
+      return None
+
+
 
 def AppendRowToDataset(dataset, newrow):
     #

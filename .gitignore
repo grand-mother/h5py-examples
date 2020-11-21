@@ -1,2 +1,4 @@
 example.hdf5
 TestFile.hdf5
+./example_event/*.trace
+*.*~

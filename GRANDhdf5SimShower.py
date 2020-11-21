@@ -22,12 +22,12 @@ import GRANDhdf5Utilities as ghdf5
 # since tables will have fields that might be empty, we always start by creating an empty instance, and then write the information we know
 
 #https://www.pythonforthelab.com/blog/how-to-use-hdf5-files-in-python/
-#print(type(SimEfield_DetectorInfo_data))
-#print(type(SimEfield_DetectorInfo_data['det_id'])) #this gives me access to the column (a numpy array)
-#print(type(SimEfield_DetectorInfo_data['det_id'][:])) #this gives me the contents of the column (a numpy array)
-#print(type(SimEfield_DetectorInfo_data['det_id'][0])) #and this gives me the first element (of the content, not access to the file)
-#print(type(SimEfield_DetectorInfo_data[0,'det_id'])) #so, this gives me access to the 'det_id' field of record 0
-#print(SimEfield_DetectorInfo_data[0])
+#print(type(SimShower_DetectorInfo_data))
+#print(type(SimShower_DetectorInfo_data['det_id'])) #this gives me access to the column (a numpy array)
+#print(type(SimShower_DetectorInfo_data['det_id'][:])) #this gives me the contents of the column (a numpy array)
+#print(type(SimShower_DetectorInfo_data['det_id'][0])) #and this gives me the first element (of the content, not access to the file)
+#print(type(SimShower_DetectorInfo_data[0,'det_id'])) #so, this gives me access to the 'det_id' field of record 0
+#print(SimShower_DetectorInfo_data[0])
 
 #SimShower RunLevelInfo
 SimShower_RunInfo_dtype =np.dtype  ([('run_id', 'u8'),           #RunID: Just to be sure we are in the right place
@@ -94,60 +94,20 @@ SimShower_EventInfo_dtype=np.dtype([('evt_id', 'u8'),    #EventID: This has to b
 #Run Level
 def SimShowerAddRunInfo(filehandle, RunID,SimShower_RunInfo=None ):
 
-    #check if "Run_"+str(RunID)+"/SimShower_RunInfo" already exist. If it does, give an error (or handle overwriting with an optional parameter).
     node="Run_"+str(RunID)+"/SimShower_RunInfo"
-    exists= node in filehandle
-    #if fset exist in filehandle, exit as only one EventInfo is allowed per event
-    #if dset exists and is accesible
-    if exists and filehandle:
-        print("SimShowerAddRunInfo: already exists, not updated",node)
-        return filehandle[node]
-    #
-    elif filehandle: #dset does not exists
-        if(type(SimShower_RunInfo)==type(None)):
-            #create an empty instance for Event Level
-            SimShower_RunInfo= np.zeros(1,SimShower_RunInfo_dtype)
-        #Put it on the file
-        SimShower_RunInfo_data=filehandle.create_dataset(node, data=SimShower_RunInfo) #there will be only one element of this
-        return SimShower_RunInfo_data
-    else:
-        print("SimShowerAddRunInfo:Could not access filehandle")
-        return None
+
+    SimShower_RunInfo_data= ghdf5.AddToInfo(filehandle, node, SimShower_RunInfo_dtype,SimShower_RunInfo )
+
+    return SimShower_RunInfo_data
 
 
 def SimShowerAddRunIndex(filehandle, RunID,SimShower_RunIndex=None):
-    #
-    #check if "Run_"+str(RunID)+"/SimShower_RunIndex" exists, if it does, give an error (or handle overwriting with an optional parameter)
+
     node="Run_"+str(RunID)+"/SimShower_RunIndex"
-    exists = node in filehandle
-    #
-    if(type(SimShower_RunIndex)==type(None)):
-      #create empty instance for RunIndex table, if none is provided
-      SimShower_RunIndex= np.zeros(1,SimShower_RunIndex_dtype)
-    #
-    #if dset exists and is accesible
-    if exists and filehandle:
-      #get the DetectorID and check if it exists already on the dataset
-      EventID=SimShower_RunIndex['evt_id']
-      dset=filehandle[node]
-      item_index = np.where(dset['evt_id']==EventID)
-      #print(item_index,len(item_index),DetectorID,item_index[0])
-      if item_index==[]:
-        print("SimShowerAddRunIndex: EventID already exists, can not continue")
-        return None
-      else:
-        ghdf5.AppendRowToDataset(dset, SimShower_RunIndex)
-        item_index = np.where(dset['evt_id']==EventID)
-        return dset, item_index[0][0]
 
-    elif filehandle: #dset does not exists
-      #Put it on the file
-      SimShower_RunIndex_data=filehandle.create_dataset(node, data=SimShower_RunIndex,maxshape=(None,)) #there will many events, so we are making it extensible
-      return SimShower_RunIndex_data,0
+    SimShower_RunIndex_data, item_index = ghdf5.AddToIndex(filehandle, node, SimShower_RunIndex_dtype, 'evt_id', SimShower_RunIndex)
 
-    else: #file is not accesible
-      print("SimShowerAddRunIndex:Could not access filehandle")
-      return None
+    return SimShower_RunIndex_data, item_index
 
 #this is the function that compiles the information of the event that will go to the RunIndex
 def SimShowerCompileRunIndex(filehandle, RunID, EventID):
@@ -181,25 +141,13 @@ def SimShowerCompileRunIndex(filehandle, RunID, EventID):
 #Event Level
 def SimShowerAddEventInfo(filehandle, RunID, EventID, SimShower_EventInfo=None):
     #
-    #check if "Run_"+str(RunID)+"/"+"Event_"+str(EventID)+"/SimShower_EventInfo" already exist. If it does, give an error (or handle overwriting with an optional parameter).
     node="Run_"+str(RunID)+"/"+"Event_"+str(EventID)+"/SimShower_EventInfo"
-    exists= node in filehandle
-    #if fset exist in filehandle, exit as only one EventInfo is allowed per event
-    #if dset exists and is accesible
-    if exists and filehandle:
-        print("SimShowerAddEventInfo: already exists, not updated",node)
-        return filehandle[node]
-    #
-    elif filehandle: #dset does not exists
-        if(type(SimShower_EventInfo)==type(None)):
-            #create an empty instance for Event Level
-            SimShower_EventInfo= np.zeros(1,SimShower_EventInfo_dtype)
-        #Put it on the file
-        SimShower_EventInfo_data=filehandle.create_dataset(node, data=SimShower_EventInfo) #there will be only one of this
-        return SimShower_EventInfo_data
-    else:
-        print("SimShowerAddEventInfo:Could not access filehandle")
-        return None
+
+    SimShower_EventInfo_data= ghdf5.AddToInfo(filehandle, node, SimShower_EventInfo_dtype,SimShower_EventInfo )
+
+    return SimShower_EventInfo_data
+
+
 
 #tables
 def SimShowerWriteLongTable(filehandle, RunID, EventID, TableName, TableData):
@@ -212,7 +160,7 @@ def SimShowerWriteLongTable(filehandle, RunID, EventID, TableName, TableData):
     exists = node in filehandle
 
     if(exists):
-      print("SimShowerWriteLongTable: Event exist, not updated",RunId,EventID,TableName)
+      print("SimShowerWriteLongTable: Event exist, not updated",RunID,EventID,TableName)
       return 0
 
     SimShower_table=filehandle.create_dataset(node, data=TableData, dtype='f4')
@@ -352,7 +300,7 @@ def SimShowerWriteLateralTable(filehandle, RunID, EventID, TableName, TableData)
     exists = node in filehandle
 
     if(exists):
-      print("SimShowerWriteLateralTable: Event exist, not updated",RunId,EventID,TableName)
+      print("SimShowerWriteLateralTable: Event exist, not updated",RunID,EventID,TableName)
       return 0
 
     SimShower_table=filehandle.create_dataset(node, data=TableData, dtype='f4')
@@ -389,7 +337,7 @@ def SimShowerWriteEnergyDistTable(filehandle, RunID, EventID, TableName, TableDa
     exists = node in filehandle
 
     if(exists):
-      print("SimShowerWriteEnergyDistTable: Event exist, not updated",RunId,EventID,TableName)
+      print("SimShowerWriteEnergyDistTable: Event exist, not updated",RunID,EventID,TableName)
       return 0
 
     SimShower_table=filehandle.create_dataset(node, data=TableData, dtype='f4')
