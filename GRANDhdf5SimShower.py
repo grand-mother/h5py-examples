@@ -11,7 +11,7 @@ import GRANDhdf5Utilities as ghdf5
 
 # Each File Section has:
 # one RunLevel RunInfo table with the information that is unchanged during the run. This is an instance of the corresponding data clas
-# one RunLevel RunIndex table with the information that is going to be used for quick indexing of the Run Events, usefull for searchs and filtering and maybe high level analysis. This is an array.
+# one RunLevel EventIndex table with the information that is going to be used for quick indexing of the Run Events, usefull for searchs and filtering and maybe high level analysis. This is an array.
 # one RunLevel DetectorInfo table with the information from the antennas that is constant in all the run
 # one data group per event. Each event will have
 #     one EventInfo table with the information for the event that changes event by event (if the data is constant over all events , that info should be in the RunInfo unless it really usefull to replicate it on every event!)
@@ -43,7 +43,7 @@ SimShower_RunInfo_dtype =np.dtype  ([('run_id', 'u8'),           #RunID: Just to
                                      ])
 
 #SimShower RunLevelIndex
-SimShower_RunIndex_dtype =np.dtype  ([('evt_id', 'u8'),    #EventID: Just to be sure we are in the right place
+SimShower_EventIndex_dtype =np.dtype  ([('evt_id', 'u8'),    #EventID: Just to be sure we are in the right place
                                       ('evt_name','S100'), #ZHAireS TaskName usefull to keep to find the original files
                                       ('hadronic_model','S20'),   #Name of the hadronic model (with version)
                                       ('prim_energy','f4'),
@@ -101,16 +101,16 @@ def SimShowerAddRunInfo(filehandle, RunID,SimShower_RunInfo=None ):
     return SimShower_RunInfo_data
 
 
-def SimShowerAddRunIndex(filehandle, RunID,SimShower_RunIndex=None):
+def SimShowerAddEventIndex(filehandle, RunID,SimShower_EventIndex=None):
 
-    node="Run_"+str(RunID)+"/SimShower_RunIndex"
+    node="Run_"+str(RunID)+"/SimShower_EventIndex"
 
-    SimShower_RunIndex_data, item_index = ghdf5.AddToIndex(filehandle, node, SimShower_RunIndex_dtype, 'evt_id', SimShower_RunIndex)
+    SimShower_EventIndex_data, item_index = ghdf5.AddToIndex(filehandle, node, SimShower_EventIndex_dtype, 'evt_id', SimShower_EventIndex)
 
-    return SimShower_RunIndex_data, item_index
+    return SimShower_EventIndex_data, item_index
 
-#this is the function that compiles the information of the event that will go to the RunIndex
-def SimShowerCompileRunIndex(filehandle, RunID, EventID):
+#this is the function that compiles the information of the event that will go to the EventIndex
+def SimShowerCompileEventIndex(filehandle, RunID, EventID):
 
     #Information that we will extract from the SimShower_EventInfo
     #check if "Run_"+str(RunID)+"/"+"Event_"+str(EventID)+"/SimShower_EventInfo" already exist. If it does, give an error (or handle overwriting with an optional parameter).
@@ -119,22 +119,22 @@ def SimShowerCompileRunIndex(filehandle, RunID, EventID):
     if(exists):
       #grab it so we can read the data
       SimShower_EventInfo=filehandle[node]
-      #create empty instance for RunIndex table
-      SimShower_RunIndex= np.zeros(1,SimShower_RunIndex_dtype)
+      #create empty instance for EventIndex table
+      SimShower_EventIndex= np.zeros(1,SimShower_EventIndex_dtype)
       #fill with the values i want
-      SimShower_RunIndex['evt_id']=SimShower_EventInfo['evt_id']
-      SimShower_RunIndex['evt_name']=SimShower_EventInfo['evt_name']
-      SimShower_RunIndex['hadronic_model']=SimShower_EventInfo['hadronic_model']
-      SimShower_RunIndex['prim_energy']=SimShower_EventInfo['prim_energy']
-      SimShower_RunIndex['prim_type']=SimShower_EventInfo['prim_type']
-      SimShower_RunIndex['prim_zenith']=SimShower_EventInfo['prim_zenith']
-      SimShower_RunIndex['prim_azimuth']=SimShower_EventInfo['prim_azimuth']
-      SimShower_RunIndex['xmax_distance']=SimShower_EventInfo['xmax_distance']
-      SimShower_RunIndex['xmax_grams']=SimShower_EventInfo['xmax_grams']
-      SimShower_RunIndex['prim_core']=SimShower_EventInfo['prim_core']
-      return SimShower_RunIndex
+      SimShower_EventIndex['evt_id']=SimShower_EventInfo['evt_id']
+      SimShower_EventIndex['evt_name']=SimShower_EventInfo['evt_name']
+      SimShower_EventIndex['hadronic_model']=SimShower_EventInfo['hadronic_model']
+      SimShower_EventIndex['prim_energy']=SimShower_EventInfo['prim_energy']
+      SimShower_EventIndex['prim_type']=SimShower_EventInfo['prim_type']
+      SimShower_EventIndex['prim_zenith']=SimShower_EventInfo['prim_zenith']
+      SimShower_EventIndex['prim_azimuth']=SimShower_EventInfo['prim_azimuth']
+      SimShower_EventIndex['xmax_distance']=SimShower_EventInfo['xmax_distance']
+      SimShower_EventIndex['xmax_grams']=SimShower_EventInfo['xmax_grams']
+      SimShower_EventIndex['prim_core']=SimShower_EventInfo['prim_core']
+      return SimShower_EventIndex
     else:
-        print("SimShowerCompileRunIndex:Could not find ",node)
+        print("SimShowerCompileEventIndex:Could not find ",node)
         return None
 
 
@@ -363,5 +363,42 @@ def SimShowerWriteEnergyDist_muplus(filehandle, RunID, EventID, TableData):
 
 def SimShowerWriteEnergyDist_allcharged(filehandle, RunID, EventID, TableData):
   SimShowerWriteEnergyDistTable(filehandle, RunID, EventID, "EnergyDist_allcharged", TableData)
+
+
+
+
+def SimShowerGetEventIndex(filehandle, RunID):
+
+    node="Run_"+str(RunID)+"/SimShower_EventIndex"
+
+    SimShower_EventIndex_handle= filehandle[node]
+
+    return SimShower_EventIndex_handle
+
+
+def SimShowerGetNevents(SimShower_EventIndex):
+
+    return np.shape(SimShower_EventIndex)[0]
+
+
+def SimShowerGetEvtID(SimShower_EventIndex,EventNumber):
+    return SimShower_EventIndex['evt_id'][EventNumber]
+
+def SimShowerGetEvtName(SimShower_EventIndex,EventNumber):
+
+    return SimShower_EventIndex['evt_name'][EventNumber]
+
+def SimShowerGetEvtZenith(SimShower_EventIndex,EventNumber):
+
+    return SimShower_EventIndex['prim_zenith'][EventNumber]
+
+def SimShowerGetEvtAzimuth(SimShower_EventIndex,EventNumber):
+
+    return SimShower_EventIndex['prim_azimuth'][EventNumber]
+
+
+
+
+
 
 

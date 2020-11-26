@@ -134,10 +134,10 @@ def ZHAiresRawToGRAND(HDF5handle, RunID, EventID, InputFolder,  SimEfieldInfo=Tr
         SimShower_EventInfo['cpu_time']=CPUTime
         SimShower_EventInfo_data=SimShower.SimShowerAddEventInfo(HDF5handle, RunID, EventID, SimShower_EventInfo)
 
-        #grab the information to fill the RunIndex Table
+        #grab the information to fill the EventIndex Table
         #this functionality must be provided by SimShower.
-        SimShower_RunIndex=SimShower.SimShowerCompileRunIndex(HDF5handle, RunID, EventID)
-        SimShower.SimShowerAddRunIndex(HDF5handle, RunID, SimShower_RunIndex)
+        SimShower_EventIndex=SimShower.SimShowerCompileEventIndex(HDF5handle, RunID, EventID)
+        SimShower.SimShowerAddEventIndex(HDF5handle, RunID, SimShower_EventIndex)
 
     #############################################################################################################################
     #  SimEfieldInfo
@@ -176,7 +176,7 @@ def ZHAiresRawToGRAND(HDF5handle, RunID, EventID, InputFolder,  SimEfieldInfo=Tr
         SimEfield_EventInfo['t_bin_size']=TimeBinSize
         SimEfield_EventInfo_data=SimEfield.SimEfieldAddEventInfo(HDF5handle, RunID, EventID, SimEfield_EventInfo)
 
-        #Go through the available antennas and CreateAndFill SimEfieldDetectorInfo
+        #Go through the available antennas and CreateAndFill SimEfieldDetectorIndex
         IDs,antx,anty,antz,antt=AiresInfo.GetAntennaInfoFromSry(sryfile[0])
         antx=np.array(antx, dtype=np.float32)
         anty=np.array(anty, dtype=np.float32)
@@ -199,14 +199,14 @@ def ZHAiresRawToGRAND(HDF5handle, RunID, EventID, InputFolder,  SimEfieldInfo=Tr
 
             efield = np.loadtxt(ant,dtype='f4') #we read the electric field as a numpy array
 
-            #create and Empty imEfield_DetectorInfo
-            SimEfield_DetectorInfo=np.zeros(1,SimEfield.SimEfield_DetectorInfo_dtype)
+            #create and Empty imEfield_DetectorIndex
+            SimEfield_DetectorIndex=np.zeros(1,SimEfield.SimEfield_DetectorIndex_dtype)
             #Populate what we can
-            SimEfield_DetectorInfo['det_id' ]=DetectorID
-            SimEfield_DetectorInfo['det_pos_shc']=ant_position
-            SimEfield_DetectorInfo['det_type']="ZHAireS"
-            SimEfield_DetectorInfo['t_0']=antt[ant_number]
-            SimEfield_DetectorInfo_data,antennaindex=SimEfield.SimEfieldAddDetectorInfo(HDF5handle,RunID,EventID, SimEfield_DetectorInfo)
+            SimEfield_DetectorIndex['det_id' ]=DetectorID
+            SimEfield_DetectorIndex['det_pos_shc']=ant_position
+            SimEfield_DetectorIndex['det_type']="ZHAireS"
+            SimEfield_DetectorIndex['t_0']=antt[ant_number]
+            SimEfield_DetectorIndex_data,antennaindex=SimEfield.SimEfieldAddDetectorIndex(HDF5handle,RunID,EventID, SimEfield_DetectorIndex)
 
             TraceX=efield[:,1]
             TraceY=efield[:,2]
@@ -214,10 +214,10 @@ def ZHAiresRawToGRAND(HDF5handle, RunID, EventID, InputFolder,  SimEfieldInfo=Tr
             SimEfield.SimEfieldWriteSimEfield(HDF5handle, RunID, EventID, DetectorID,TraceX,TraceY,TraceZ)
 
 
-        #grab the information to fill the RunIndex Table
+        #grab the information to fill the EventIndex Table
         #this functionality must be provided by SimEfield.
-        SimEfield_RunIndex=SimEfield.SimEfieldCompileRunIndex(HDF5handle, RunID, EventID)
-        SimEfield.SimEfieldAddRunIndex(HDF5handle, RunID, SimEfield_RunIndex)
+        SimEfield_EventIndex=SimEfield.SimEfieldCompileEventIndex(HDF5handle, RunID, EventID)
+        SimEfield.SimEfieldAddEventIndex(HDF5handle, RunID, SimEfield_EventIndex)
 
 
     ##############################################################################################################################

@@ -29,7 +29,9 @@ import GRANDhdf5Utilities as ghdf5
 #print(type(SimEfield_DetectorInfo_data[0,'det_id'])) #so, this gives me access to the 'det_id' field of record 0
 #print(SimEfield_DetectorInfo_data[0])
 
-#Run Level
+
+FileVersion="0.0.20.11.21" #Versioning scheme? Major.Minor.YY.MM.DD?
+
 def AddToInfo(filehandle, node, Info_dtype,Info=None ):
 
     #check if node already exist. If it does, give an error (or handle overwriting with an optional parameter).
@@ -46,6 +48,8 @@ def AddToInfo(filehandle, node, Info_dtype,Info=None ):
             Info= np.zeros(1,Info_dtype)
         #Put it on the file
         Info_data=filehandle.create_dataset(node, data=Info) #there will be only one element of this
+        #SetFileVersion
+        Info_data.attrs['fileversion']=FileVersion
         return Info_data
     else:
         print("AddToInfo:Could not access filehandle")
@@ -78,6 +82,8 @@ def AddToIndex(filehandle, node, Data_dtype,IndexField, Data=None):
     elif filehandle: #dset does not exists
       #Put it on the file
       Index_data=filehandle.create_dataset(node, data=Data,maxshape=(None,)) #there will many events, so we are making it extensible
+      #SetFileVersion
+      Index_data.attrs['fileversion']=FileVersion
       return Index_data,0
 
     else: #file is not accesible
