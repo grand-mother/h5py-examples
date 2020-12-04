@@ -64,36 +64,52 @@ def ComputeVoltageOnHDF5(inputfilename,RunID=0,outfilename="N/A"):
         tpost=SimEfield.SimEfieldGetEvtTpost(EventInfo)
 
 
+        #Write the
+
+
         for i in range(0,nantennas):
 
-          DetectorID=SimEfield.SimEfieldGetDetectorID(DetectorIndex,i)
+            DetectorID=SimEfield.SimEfieldGetDetectorID(DetectorIndex,i)
 
-          logging.info("computing voltage for antenna "+DetectorID+" ("+str(i+1)+"/"+str(nantennas)+")")
+            logging.info("computing voltage for antenna "+DetectorID+" ("+str(i+1)+"/"+str(nantennas)+")")
 
-          position=SimEfield.SimEfieldGetDetectorPosition(DetectorIndex,i)
-          logging.debug("at position"+str(position))
+            position=SimEfield.SimEfieldGetDetectorPosition(DetectorIndex,i)
+            logging.debug("at position"+str(position))
 
-          efield=SimEfield.SimEfieldGetEfield(infilehandle,RunID,EventID,DetectorID)
+            efield=SimEfield.SimEfieldGetEfield(infilehandle,RunID,EventID,DetectorID)
 
-          t0=SimEfield.SimEfieldGetDetectorT0(DetectorIndex,i)
+            t0=SimEfield.SimEfieldGetDetectorT0(DetectorIndex,i)
 
-          time=np.arange(tpre+t0,tpost+t0+10*tbinsize,tbinsize,)
+            time=np.arange(tpre+t0,tpost+t0+10*tbinsize,tbinsize,)
 
-          time=time[0:np.shape(efield)[0]]
+            time=time[0:np.shape(efield)[0]]
 
-          efield=np.column_stack((time,efield))
+            efield=np.column_stack((time,efield))
 
-          #i compute the antenna response using the compute_antennaresponse function
-          #A NICE call to the radio-simus library. Configuration and details of the voltage computation unavailable for now!.
-          #Configuration should be a little more "present" in the function call,
-          #also maybe the library to handle .ini files would be more profesional and robust than current implementation
+            #i compute the antenna response using the compute_antennaresponse function
+            #A NICE call to the radio-simus library. Configuration and details of the voltage computation unavailable for now!.
+            #Configuration should be a little more "present" in the function call,
+            #also maybe the library to handle .ini files would be more profesional and robust than current implementation
 
-          voltage = compute_antennaresponse(efield, Zenith, Azimuth, alpha=0, beta=0 )
+            voltage = compute_antennaresponse(efield, Zenith, Azimuth, alpha=0, beta=0 )
 
-          #now i need to put a numpy array into an astropy table, but before y change the data type to float32 so that it takes less space (its still good to 7 decimals)
-          voltage32= voltage.astype('f4')
+            #now i need to put a numpy array into an astropy table, but before y change the data type to float32 so that it takes less space (its still good to 7 decimals)
+            voltage32= voltage.astype('f4')
 
-          SimSignal.SimSignalWriteSimSignal(outfilehandle, RunID, EventID, DetectorID,voltage32[:,1],voltage32[:,2],voltage32[:,3])
+            SimSignal.SimSignalWriteSimSignal(outfilehandle, RunID, EventID, DetectorID,voltage32[:,1],voltage32[:,2],voltage32[:,3])
+
+
+            #Create The Signal detector index
+                      #create and Empty imEfield_DetectorIndex
+            SimSignal_DetectorIndex=np.zeros(1,SimSignal.SimSignal_DetectorIndex_dtype)
+            #Populate what we can
+            SimSignal_DetectorIndex['det_id' ]=DetectorID
+            SimSignal_DetectorIndex['det_pos_shc']=position
+            SimSignal_DetectorIndex['det_type']="GP35"
+            SimSignal_DetectorIndex['t_0']=t0
+            SimSignal_DetectorIndex_data,antennaindex=SimSignal.SimSignalAddDetectorIndex(outfilehandle,RunID,EventID, SimSignal_DetectorIndex)
+
+
 
         #end for
 

@@ -465,11 +465,11 @@ if __name__ == '__main__':
 
   elif(mode=="full"):
 
-      ZHAiresRawToGRAND(inputfolder,  SimEfieldInfo=True, NLongitudinal=True, ELongitudinal=True, NlowLongitudinal=True, ElowLongitudinal=True, EdepLongitudinal=True, LateralDistribution=True, EnergyDistribution=True)
+      ZHAiresRawToGRAND(HDF5handle,RunID,EventID,inputfolder, SimEfieldInfo=True, NLongitudinal=True, ELongitudinal=True, NlowLongitudinal=True, ElowLongitudinal=True, EdepLongitudinal=True, LateralDistribution=True, EnergyDistribution=True)
 
   elif(mode=="minimal"):
 
-      ZHAiresRawToGRAND(inputfolder,  SimEfieldInfo=False, NLongitudinal=False, ELongitudinal=False, NlowLongitudinal=False, ElowLongitudinal=False, EdepLongitudinal=False, LateralDistribution=False, EnergyDistribution=False)
+      ZHAiresRawToGRAND(HDF5handle,RunID,EventID,inputfolder,  SimEfieldInfo=False, NLongitudinal=False, ELongitudinal=False, NlowLongitudinal=False, ElowLongitudinal=False, EdepLongitudinal=False, LateralDistribution=False, EnergyDistribution=False)
 
 
   else:
