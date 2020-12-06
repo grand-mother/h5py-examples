@@ -1,4 +1,8 @@
 example.hdf5
 TestFile.hdf5
 ./example_event/*.trace
+example_event/*.trace
+example_event/Stshp*
 *.*~
+__pycache__
+Bruno_output.hdf5
