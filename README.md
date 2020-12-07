@@ -18,14 +18,7 @@
 
 # GRAND FILE FORMAT
 
-
-
-- If you want to test the ZHAireSRawToGRANDhdf5.py, uncompress the example event and do
-
-$PYTHONINTERPRETER ZHAireSRawToGRANDHDF5.py ./example_event/ standard 0 3 TestFile.hdf5
-
-You can run it several times with diferent run numbers and IDs to create a file with multiple times the same event.
-You can get other events elswhere if you want.
+Prerequisites
 
 You will need ZHAireS-Python AiresInfoFunctions.py from https://github.com/mjtueros/ZHAireS-Python  (from the DevelopmentLeia branch)
 You will need to define a ZHAIRESPYTHON environment variable pointing to the directory where you have this file, or edit the files to enter the location manually
@@ -33,3 +26,12 @@ You will need to define a ZHAIRESPYTHON environment variable pointing to the dir
 And you will need to have ZHAIRES installed on your system, and defined the AIRESBINDIR environtment variable
 or modify the scripts to point to the dir manually, the error message you get will tell you where)
 Sorry, there is no painless way of doing this.
+
+To test the ZHAireSRawToGRANDhdf5.py, uncompress the example event and do
+
+$PYTHONINTERPRETER ZHAireSRawToGRANDHDF5.py ./example_event/ standard 0 3 TestFile.hdf5
+
+You can run it several times with diferent run numbers and IDs to create a file with multiple times the same event.
+You can get other events elswhere if you want.
+
+
