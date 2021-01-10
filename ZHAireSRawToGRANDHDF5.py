@@ -32,7 +32,7 @@ def ZHAiresRawToGRAND(HDF5handle, RunID, EventID, InputFolder,  SimEfieldInfo=Tr
       logging.critical("there should be one and only one idf file in the input directory!. cannot continue!")
       return -1
 
-    sryfile=glob.glob(inputfolder+"/*.sry")
+    sryfile=glob.glob(InputFolder+"/*.sry")
 
     if(len(sryfile)>1):
       logging.critical("there should be one and only one sry file in the input directory!. cannot continue!")
@@ -48,7 +48,7 @@ def ZHAiresRawToGRAND(HDF5handle, RunID, EventID, InputFolder,  SimEfieldInfo=Tr
     if(len(inpfile)!=1):
       logging.critical("we can only get the core position from the input file, at it should be in the same directory as the sry")
       logging.critical("defaulting to (0.0,0)")
-      inpfile[0]=None
+      inpfile=[None]
       CorePosition=(0.0,0.0,0.0)
 
 
@@ -185,7 +185,7 @@ def ZHAiresRawToGRAND(HDF5handle, RunID, EventID, InputFolder,  SimEfieldInfo=Tr
 
         #ZHAIRES DEPENDENT
         ending_e = "/a*.trace"
-        tracefiles=glob.glob(inputfolder+ending_e)
+        tracefiles=glob.glob(InputFolder+ending_e)
 
         if(len(tracefiles)==0):
          logging.critical("no trace files found in "+showerdirectory+" ZHAireSHDF5FileWriter cannot continue")
@@ -226,37 +226,37 @@ def ZHAiresRawToGRAND(HDF5handle, RunID, EventID, InputFolder,  SimEfieldInfo=Tr
 
     if(NLongitudinal):
         #the gammas table
-        table=AiresInfo.GetLongitudinalTable(inputfolder,1001,Slant=True,Precision="Simple")
+        table=AiresInfo.GetLongitudinalTable(InputFolder,1001,Slant=True,Precision="Simple")
         SimShower.SimShowerWriteSlantDepth(HDF5handle, RunID, EventID, table.T[0])
         SimShower.SimShowerWriteNgammas(HDF5handle, RunID, EventID, table.T[1])
 
         #the eplusminus table, in vertical, to store also the vertical depth
-        table=AiresInfo.GetLongitudinalTable(inputfolder,1205,Slant=False,Precision="Simple")
+        table=AiresInfo.GetLongitudinalTable(InputFolder,1205,Slant=False,Precision="Simple")
         SimShower.SimShowerWriteVerticalDepth(HDF5handle, RunID, EventID, table.T[0])
         SimShower.SimShowerWriteNeplusminus(HDF5handle, RunID, EventID, table.T[1])
 
         #the e plus (yes, the positrons)
-        table=AiresInfo.GetLongitudinalTable(inputfolder,1006,Slant=True,Precision="Simple")
+        table=AiresInfo.GetLongitudinalTable(InputFolder,1006,Slant=True,Precision="Simple")
         SimShower.SimShowerWriteNeplus(HDF5handle, RunID, EventID, table.T[1])
 
         #the mu plus mu minus
-        table=AiresInfo.GetLongitudinalTable(inputfolder,1207,Slant=True,Precision="Simple")
+        table=AiresInfo.GetLongitudinalTable(InputFolder,1207,Slant=True,Precision="Simple")
         SimShower.SimShowerWriteNmuplusminus(HDF5handle, RunID, EventID, table.T[1])
 
         #the mu plus
-        table=AiresInfo.GetLongitudinalTable(inputfolder,1007,Slant=True,Precision="Simple")
+        table=AiresInfo.GetLongitudinalTable(InputFolder,1007,Slant=True,Precision="Simple")
         SimShower.SimShowerWriteNmuplus(HDF5handle, RunID, EventID, table.T[1])
 
         #the pi plus pi munus
-        table=AiresInfo.GetLongitudinalTable(inputfolder,1211,Slant=True,Precision="Simple")
+        table=AiresInfo.GetLongitudinalTable(InputFolder,1211,Slant=True,Precision="Simple")
         SimShower.SimShowerWriteNpiplusminus(HDF5handle, RunID, EventID, table.T[1])
 
         #the pi plus
-        table=AiresInfo.GetLongitudinalTable(inputfolder,1011,Slant=True,Precision="Simple")
+        table=AiresInfo.GetLongitudinalTable(InputFolder,1011,Slant=True,Precision="Simple")
         SimShower.SimShowerWriteNpiplus(HDF5handle, RunID, EventID, table.T[1])
 
         #and the all charged
-        table=AiresInfo.GetLongitudinalTable(inputfolder,1291,Slant=True,Precision="Simple")
+        table=AiresInfo.GetLongitudinalTable(InputFolder,1291,Slant=True,Precision="Simple")
         SimShower.SimShowerWriteNallcharged(HDF5handle, RunID, EventID, table.T[1])
 
     ##############################################################################################################################
@@ -264,51 +264,51 @@ def ZHAiresRawToGRAND(HDF5handle, RunID, EventID, InputFolder,  SimEfieldInfo=Tr
     ##############################################################################################################################
     if(ELongitudinal):
         #the gammas
-        table=AiresInfo.GetLongitudinalTable(inputfolder,1501,Slant=True,Precision="Simple")
+        table=AiresInfo.GetLongitudinalTable(InputFolder,1501,Slant=True,Precision="Simple")
         SimShower.SimShowerWriteEgammas(HDF5handle, RunID, EventID, table.T[1])
 
         #i call the eplusminus table, in vertical, to store also the vertical depth
-        table=AiresInfo.GetLongitudinalTable(inputfolder,1705,Slant=False,Precision="Simple")
+        table=AiresInfo.GetLongitudinalTable(InputFolder,1705,Slant=False,Precision="Simple")
         SimShower.SimShowerWriteEeplusminus(HDF5handle, RunID, EventID, table.T[1])
 
         #the mu plus mu minus
-        table=AiresInfo.GetLongitudinalTable(inputfolder,1707,Slant=True,Precision="Simple")
+        table=AiresInfo.GetLongitudinalTable(InputFolder,1707,Slant=True,Precision="Simple")
         SimShower.SimShowerWriteEmuplusminus(HDF5handle, RunID, EventID, table.T[1])
 
         #the pi plus pi minus
-        table=AiresInfo.GetLongitudinalTable(inputfolder,1711,Slant=True,Precision="Simple")
+        table=AiresInfo.GetLongitudinalTable(InputFolder,1711,Slant=True,Precision="Simple")
         SimShower.SimShowerWriteEpiplusminus(HDF5handle, RunID, EventID, table.T[1])
 
         #the k plus k minus
-        table=AiresInfo.GetLongitudinalTable(inputfolder,1713,Slant=True,Precision="Simple")
+        table=AiresInfo.GetLongitudinalTable(InputFolder,1713,Slant=True,Precision="Simple")
         SimShower.SimShowerWriteEkplusminus(HDF5handle, RunID, EventID, table.T[1])
 
         #the neutrons
-        table=AiresInfo.GetLongitudinalTable(inputfolder,1521,Slant=True,Precision="Simple")
+        table=AiresInfo.GetLongitudinalTable(InputFolder,1521,Slant=True,Precision="Simple")
         SimShower.SimShowerWriteEneutrons(HDF5handle, RunID, EventID, table.T[1])
 
         #the protons
-        table=AiresInfo.GetLongitudinalTable(inputfolder,1522,Slant=True,Precision="Simple")
+        table=AiresInfo.GetLongitudinalTable(InputFolder,1522,Slant=True,Precision="Simple")
         SimShower.SimShowerWriteEprotons(HDF5handle, RunID, EventID, table.T[1])
 
         #the anti-protons
-        table=AiresInfo.GetLongitudinalTable(inputfolder,1523,Slant=True,Precision="Simple")
+        table=AiresInfo.GetLongitudinalTable(InputFolder,1523,Slant=True,Precision="Simple")
         SimShower.SimShowerWriteEpbar(HDF5handle, RunID, EventID, table.T[1])
 
         #the nuclei
-        table=AiresInfo.GetLongitudinalTable(inputfolder,1541,Slant=True,Precision="Simple")
+        table=AiresInfo.GetLongitudinalTable(InputFolder,1541,Slant=True,Precision="Simple")
         SimShower.SimShowerWriteEnuclei(HDF5handle, RunID, EventID, table.T[1])
 
         #the other charged
-        table=AiresInfo.GetLongitudinalTable(inputfolder,1591,Slant=True,Precision="Simple")
+        table=AiresInfo.GetLongitudinalTable(InputFolder,1591,Slant=True,Precision="Simple")
         SimShower.SimShowerWriteEother_charged(HDF5handle, RunID, EventID, table.T[1])
 
         #the other neutral
-        table=AiresInfo.GetLongitudinalTable(inputfolder,1592,Slant=True,Precision="Simple")
+        table=AiresInfo.GetLongitudinalTable(InputFolder,1592,Slant=True,Precision="Simple")
         SimShower.SimShowerWriteEother_neutral(HDF5handle, RunID, EventID, table.T[1])
 
         #and the all
-        table=AiresInfo.GetLongitudinalTable(inputfolder,1793,Slant=True,Precision="Simple")
+        table=AiresInfo.GetLongitudinalTable(InputFolder,1793,Slant=True,Precision="Simple")
         SimShower.SimShowerWriteEall(HDF5handle, RunID, EventID, table.T[1])
 
     ################################################################################################################################
@@ -316,27 +316,27 @@ def ZHAiresRawToGRAND(HDF5handle, RunID, EventID, InputFolder,  SimEfieldInfo=Tr
     #################################################################################################################################
     if(NlowLongitudinal):
         #the gammas
-        table=AiresInfo.GetLongitudinalTable(inputfolder,7001,Slant=True,Precision="Simple")
+        table=AiresInfo.GetLongitudinalTable(InputFolder,7001,Slant=True,Precision="Simple")
         SimShower.SimShowerWriteNlowgammas(HDF5handle, RunID, EventID, table.T[1])
 
         #i call the eplusminus table, in vertical, to store also the vertical depth
-        table=AiresInfo.GetLongitudinalTable(inputfolder,7005,Slant=False,Precision="Simple")
+        table=AiresInfo.GetLongitudinalTable(InputFolder,7005,Slant=False,Precision="Simple")
         SimShower.SimShowerWriteNloweplusminus(HDF5handle, RunID, EventID, table.T[1])
 
         #the positrons (note that they will deposit twice their rest mass!)
-        table=AiresInfo.GetLongitudinalTable(inputfolder,7006,Slant=False,Precision="Simple")
+        table=AiresInfo.GetLongitudinalTable(InputFolder,7006,Slant=False,Precision="Simple")
         SimShower.SimShowerWriteNloweplus(HDF5handle, RunID, EventID, table.T[1])
 
         #the muons
-        table=AiresInfo.GetLongitudinalTable(inputfolder,7207,Slant=False,Precision="Simple")
+        table=AiresInfo.GetLongitudinalTable(InputFolder,7207,Slant=False,Precision="Simple")
         SimShower.SimShowerWriteNlowmuons(HDF5handle, RunID, EventID, table.T[1])
 
         #Other Chaged
-        table=AiresInfo.GetLongitudinalTable(inputfolder,7091,Slant=False,Precision="Simple")
+        table=AiresInfo.GetLongitudinalTable(InputFolder,7091,Slant=False,Precision="Simple")
         SimShower.SimShowerWriteNlowother_charged(HDF5handle, RunID, EventID, table.T[1])
 
         #Other Neutral
-        table=AiresInfo.GetLongitudinalTable(inputfolder,7092,Slant=False,Precision="Simple")
+        table=AiresInfo.GetLongitudinalTable(InputFolder,7092,Slant=False,Precision="Simple")
         SimShower.SimShowerWriteNlowother_neutral(HDF5handle, RunID, EventID, table.T[1])
 
     ################################################################################################################################
@@ -344,27 +344,27 @@ def ZHAiresRawToGRAND(HDF5handle, RunID, EventID, InputFolder,  SimEfieldInfo=Tr
     #################################################################################################################################
     if(ElowLongitudinal):
         #the gammas
-        table=AiresInfo.GetLongitudinalTable(inputfolder,7501,Slant=True,Precision="Simple")
+        table=AiresInfo.GetLongitudinalTable(InputFolder,7501,Slant=True,Precision="Simple")
         SimShower.SimShowerWriteElowgammas(HDF5handle, RunID, EventID, table.T[1])
 
         #i call the eplusminus table, in vertical, to store also the vertical depth
-        table=AiresInfo.GetLongitudinalTable(inputfolder,7505,Slant=False,Precision="Simple")
+        table=AiresInfo.GetLongitudinalTable(InputFolder,7505,Slant=False,Precision="Simple")
         SimShower.SimShowerWriteEloweplusminus(HDF5handle, RunID, EventID, table.T[1])
 
         #the positrons (note that they will deposit twice their rest mass!)
-        table=AiresInfo.GetLongitudinalTable(inputfolder,7506,Slant=False,Precision="Simple")
+        table=AiresInfo.GetLongitudinalTable(InputFolder,7506,Slant=False,Precision="Simple")
         SimShower.SimShowerWriteEloweplus(HDF5handle, RunID, EventID, table.T[1])
 
         #the muons
-        table=AiresInfo.GetLongitudinalTable(inputfolder,7707,Slant=False,Precision="Simple")
+        table=AiresInfo.GetLongitudinalTable(InputFolder,7707,Slant=False,Precision="Simple")
         SimShower.SimShowerWriteElowmuons(HDF5handle, RunID, EventID, table.T[1])
 
         #Other Chaged
-        table=AiresInfo.GetLongitudinalTable(inputfolder,7591,Slant=False,Precision="Simple")
+        table=AiresInfo.GetLongitudinalTable(InputFolder,7591,Slant=False,Precision="Simple")
         SimShower.SimShowerWriteElowother_charged(HDF5handle, RunID, EventID, table.T[1])
 
         #Other Neutral
-        table=AiresInfo.GetLongitudinalTable(inputfolder,7592,Slant=False,Precision="Simple")
+        table=AiresInfo.GetLongitudinalTable(InputFolder,7592,Slant=False,Precision="Simple")
         SimShower.SimShowerWriteElowother_neutral(HDF5handle, RunID, EventID, table.T[1])
 
     ################################################################################################################################
@@ -372,27 +372,27 @@ def ZHAiresRawToGRAND(HDF5handle, RunID, EventID, InputFolder,  SimEfieldInfo=Tr
     #################################################################################################################################
     if(EdepLongitudinal):
         #the gammas
-        table=AiresInfo.GetLongitudinalTable(inputfolder,7801,Slant=True,Precision="Simple")
+        table=AiresInfo.GetLongitudinalTable(InputFolder,7801,Slant=True,Precision="Simple")
         SimShower.SimShowerWriteEdepgammas(HDF5handle, RunID, EventID, table.T[1])
 
         #i call the eplusminus table, in vertical, to store also the vertical depth
-        table=AiresInfo.GetLongitudinalTable(inputfolder,7805,Slant=False,Precision="Simple")
+        table=AiresInfo.GetLongitudinalTable(InputFolder,7805,Slant=False,Precision="Simple")
         SimShower.SimShowerWriteEdepeplusminus(HDF5handle, RunID, EventID, table.T[1])
 
         #the positrons (note that they will deposit twice their rest mass!)
-        table=AiresInfo.GetLongitudinalTable(inputfolder,7806,Slant=False,Precision="Simple")
+        table=AiresInfo.GetLongitudinalTable(InputFolder,7806,Slant=False,Precision="Simple")
         SimShower.SimShowerWriteEdepeplus(HDF5handle, RunID, EventID, table.T[1])
 
         #the muons
-        table=AiresInfo.GetLongitudinalTable(inputfolder,7907,Slant=False,Precision="Simple")
+        table=AiresInfo.GetLongitudinalTable(InputFolder,7907,Slant=False,Precision="Simple")
         SimShower.SimShowerWriteEdepmuons(HDF5handle, RunID, EventID, table.T[1])
 
         #Other Chaged
-        table=AiresInfo.GetLongitudinalTable(inputfolder,7891,Slant=False,Precision="Simple")
+        table=AiresInfo.GetLongitudinalTable(InputFolder,7891,Slant=False,Precision="Simple")
         SimShower.SimShowerWriteEdepother_charged(HDF5handle, RunID, EventID, table.T[1])
 
         #Other Neutral
-        table=AiresInfo.GetLongitudinalTable(inputfolder,7892,Slant=False,Precision="Simple")
+        table=AiresInfo.GetLongitudinalTable(InputFolder,7892,Slant=False,Precision="Simple")
         SimShower.SimShowerWriteEdepother_neutral(HDF5handle, RunID, EventID, table.T[1])
 
     ################################################################################################################################
@@ -400,23 +400,23 @@ def ZHAiresRawToGRAND(HDF5handle, RunID, EventID, InputFolder,  SimEfieldInfo=Tr
     #################################################################################################################################
     if(LateralDistribution):
         #the gammas
-        table=AiresInfo.GetLateralTable(inputfolder,2001,Density=False,Precision="Simple")
+        table=AiresInfo.GetLateralTable(InputFolder,2001,Density=False,Precision="Simple")
         SimShower.SimShowerWriteLDFradius(HDF5handle, RunID, EventID, table.T[0])
         SimShower.SimShowerWriteLDFgamma(HDF5handle, RunID, EventID, table.T[1])
 
-        table=AiresInfo.GetLateralTable(inputfolder,2205,Density=False,Precision="Simple")
+        table=AiresInfo.GetLateralTable(InputFolder,2205,Density=False,Precision="Simple")
         SimShower.SimShowerWriteLDFeplusminus(HDF5handle, RunID, EventID, table.T[1])
 
-        table=AiresInfo.GetLateralTable(inputfolder,2006,Density=False,Precision="Simple")
+        table=AiresInfo.GetLateralTable(InputFolder,2006,Density=False,Precision="Simple")
         SimShower.SimShowerWriteLDFeplus(HDF5handle, RunID, EventID, table.T[1])
 
-        table=AiresInfo.GetLateralTable(inputfolder,2207,Density=False,Precision="Simple")
+        table=AiresInfo.GetLateralTable(InputFolder,2207,Density=False,Precision="Simple")
         SimShower.SimShowerWriteLDFmuplusminus(HDF5handle, RunID, EventID, table.T[1])
 
-        table=AiresInfo.GetLateralTable(inputfolder,2007,Density=False,Precision="Simple")
+        table=AiresInfo.GetLateralTable(InputFolder,2007,Density=False,Precision="Simple")
         SimShower.SimShowerWriteLDFmuplus(HDF5handle, RunID, EventID, table.T[1])
 
-        table=AiresInfo.GetLateralTable(inputfolder,2291,Density=False,Precision="Simple")
+        table=AiresInfo.GetLateralTable(InputFolder,2291,Density=False,Precision="Simple")
         SimShower.SimShowerWriteLDFallcharged(HDF5handle, RunID, EventID, table.T[1])
 
     ################################################################################################################################
@@ -424,23 +424,23 @@ def ZHAiresRawToGRAND(HDF5handle, RunID, EventID, InputFolder,  SimEfieldInfo=Tr
     #################################################################################################################################
     if(EnergyDistribution):
         #the gammas
-        table=AiresInfo.GetLateralTable(inputfolder,2501,Density=False,Precision="Simple")
+        table=AiresInfo.GetLateralTable(InputFolder,2501,Density=False,Precision="Simple")
         SimShower.SimShowerWriteEnergyDist_energy(HDF5handle, RunID, EventID, table.T[0])
         SimShower.SimShowerWriteEnergyDist_gammas(HDF5handle, RunID, EventID, table.T[1])
 
-        table=AiresInfo.GetLateralTable(inputfolder,2705,Density=False,Precision="Simple")
+        table=AiresInfo.GetLateralTable(InputFolder,2705,Density=False,Precision="Simple")
         SimShower.SimShowerWriteEnergyDist_eplusminus(HDF5handle, RunID, EventID, table.T[1])
 
-        table=AiresInfo.GetLateralTable(inputfolder,2506,Density=False,Precision="Simple")
+        table=AiresInfo.GetLateralTable(InputFolder,2506,Density=False,Precision="Simple")
         SimShower.SimShowerWriteEnergyDist_eplus(HDF5handle, RunID, EventID, table.T[1])
 
-        table=AiresInfo.GetLateralTable(inputfolder,2707,Density=False,Precision="Simple")
+        table=AiresInfo.GetLateralTable(InputFolder,2707,Density=False,Precision="Simple")
         SimShower.SimShowerWriteEnergyDist_muplusminus(HDF5handle, RunID, EventID, table.T[1])
 
-        table=AiresInfo.GetLateralTable(inputfolder,2507,Density=False,Precision="Simple")
+        table=AiresInfo.GetLateralTable(InputFolder,2507,Density=False,Precision="Simple")
         SimShower.SimShowerWriteEnergyDist_muplus(HDF5handle, RunID, EventID, table.T[1])
 
-        table=AiresInfo.GetLateralTable(inputfolder,2791,Density=False,Precision="Simple")
+        table=AiresInfo.GetLateralTable(InputFolder,2791,Density=False,Precision="Simple")
         SimShower.SimShowerWriteEnergyDist_allcharged(HDF5handle, RunID, EventID, table.T[1])
 
     return EventName

@@ -30,7 +30,7 @@ import GRANDhdf5Utilities as ghdf5
 #print(SimShower_DetectorInfo_data[0])
 
 #SimShower RunLevelInfo
-SimShower_RunInfo_dtype =np.dtype  ([('run_id', 'u8'),           #RunID: Just to be sure we are in the right place
+SimShower_RunInfo_dtype =np.dtype  ([('run_id', 'uint32'),           #RunID: Just to be sure we are in the right place
                                      ('shower_sim','S20'),       #Name of the simulator (with version)
                                      ('rel_thin','f4'),          #Relative thinning energy
                                      ('weight_factor','f4'),
@@ -43,11 +43,11 @@ SimShower_RunInfo_dtype =np.dtype  ([('run_id', 'u8'),           #RunID: Just to
                                      ])
 
 #SimShower RunLevelIndex
-SimShower_EventIndex_dtype =np.dtype  ([('evt_id', 'u8'),    #EventID: Just to be sure we are in the right place
+SimShower_EventIndex_dtype =np.dtype  ([('evt_id', 'S40'),    #EventID: Just to be sure we are in the right place
                                       ('evt_name','S100'), #ZHAireS TaskName usefull to keep to find the original files
                                       ('hadronic_model','S20'),   #Name of the hadronic model (with version)
                                       ('prim_energy','f4'),
-                                      ('prim_type','f4'),
+                                      ('prim_type','S20'),
                                       ('prim_zenith','f4'),
                                       ('prim_azimuth','f4'),
                                       ('xmax_distance','f8'), #
@@ -56,8 +56,8 @@ SimShower_EventIndex_dtype =np.dtype  ([('evt_id', 'u8'),    #EventID: Just to b
                                      ])
 
 #SimShower EventLevelInfo
-SimShower_EventInfo_dtype=np.dtype([('evt_id', 'u8'),    #EventID: This has to be defined. An unsigned int?
-                                    ('run_id', 'u8'),
+SimShower_EventInfo_dtype=np.dtype([('evt_id', 'S40'),    #EventID: This has to be defined. Carefull with integers, number of digits is limited to u64 range (18446744073709551615)
+                                    ('run_id', 'uint32'),
                                     ('evt_name','S100'), #ZHAireS TaskName usefull to keep to find the original files
                                     ('rnd_seed', 'f8'),
                                     ('hadronic_model','S20'),   #Name of the hadronic model (with version)

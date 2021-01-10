@@ -31,7 +31,7 @@ import GRANDhdf5Utilities as ghdf5
 
 #SimSignal RunLevelInfo
 #prefix=se_rifo
-SimSignal_RunInfo_dtype =np.dtype  ([('run_id', 'u8'),            #RunID: Just to be sure we are in the right place
+SimSignal_RunInfo_dtype =np.dtype  ([('run_id', 'uint32'),            #RunID: Just to be sure we are in the right place
                                      ('signal_sim','S20'),
                                      ('filter' ,'S16'),           #Name of the filter
                                      ('filter_param','f8',(1,2)), #parameters of the filter (for now, filter has only low and high limits, in MHz
@@ -42,7 +42,7 @@ SimSignal_RunInfo_dtype =np.dtype  ([('run_id', 'u8'),            #RunID: Just t
 
 #SimSignal RunLevelIndex
 #prefix=se_ri
-SimSignal_EventIndex_dtype =np.dtype  ([('evt_id', 'u8'),    #EventID: Just to be sure we are in the right place
+SimSignal_EventIndex_dtype =np.dtype  ([('evt_id', 'S30'),    #EventID: Just to be sure we are in the right place
                                       ('evt_name','S100'), #ZHAireS TaskName usefull to keep to find the original files
                                      #Second Level Parameters
                                       ('n_trig','i')       #Number of triggered antennas
@@ -51,8 +51,8 @@ SimSignal_EventIndex_dtype =np.dtype  ([('evt_id', 'u8'),    #EventID: Just to b
 
 #SimSignal EventLevelInfo
 #prefix=se_ei
-SimSignal_EventInfo_dtype =np.dtype  ([('run_id', 'u8'),      #RunID: Just to be sure we are in the right place. At some point, we might want to select events and put them together in a file...good to know where they came from
-                                       ('evt_id', 'u8'),      #AntenaID:
+SimSignal_EventInfo_dtype =np.dtype  ([('run_id', 'uint32'),      #RunID: Just to be sure we are in the right place. At some point, we might want to select events and put them together in a file...good to know where they came from
+                                       ('evt_id', 'S30'),      #AntenaID:
                                        ('evt_name','S100'),   #ZHAireS TaskName
                                        #Second Level Parameters
                                        ('n_trig','i')         #Number of triggered antennas

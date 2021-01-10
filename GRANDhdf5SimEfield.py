@@ -31,7 +31,7 @@ import GRANDhdf5Utilities as ghdf5
 
 #SimEfield RunLevelInfo
 #prefix=se_rifo
-SimEfield_RunInfo_dtype =np.dtype  ([('run_id', 'u8'),                  #RunID: Just to be sure we are in the right place
+SimEfield_RunInfo_dtype =np.dtype  ([('run_id', 'S40'),                  #RunID: Just to be sure we are in the right place
                                      ('field_sim','S20'),               #Name and version of the field simulator
                                      ('refractivity_model' ,'S16'),     #Name of the index of refraction model used ("i.e Exponential")
                                      ('refractivity_param','f8',(1,2)), #Refractivity at sea level, scale height (we will need more here!)
@@ -41,7 +41,7 @@ SimEfield_RunInfo_dtype =np.dtype  ([('run_id', 'u8'),                  #RunID: 
 
 #SimEfield RunLevelIndex
 #prefix=se_ri
-SimEfield_EventIndex_dtype =np.dtype  ([('evt_id', 'u8'),               #EventID: Just to be sure we are in the right place
+SimEfield_EventIndex_dtype =np.dtype  ([('evt_id', 'S40'),               #EventID: Just to be sure we are in the right place
                                       ('evt_name','S100'),              #ZHAireS TaskName usefull to keep to find the original files
                                      #Second Level Parameters
                                       ('n_trig','i')                    #Number of triggered antennas
@@ -50,8 +50,8 @@ SimEfield_EventIndex_dtype =np.dtype  ([('evt_id', 'u8'),               #EventID
 
 #SimEfield EventLevelInfo
 #prefix=se_ei
-SimEfield_EventInfo_dtype =np.dtype  ([('run_id', 'u8'),                #RunID: Just to be sure we are in the right place. At some point, we might want to select events and put them together in a file...good to know where they came from
-                                       ('evt_id', 'u8'),                #AntenaID:
+SimEfield_EventInfo_dtype =np.dtype  ([('run_id', 'uint32'),            #RunID: Just to be sure we are in the right place. At some point, we might want to select events and put them together in a file...good to know where they came from
+                                       ('evt_id', 'S40'),               #EventID:
                                        ('evt_name','S100'),             #ZHAireS TaskName
                                        ('t_pre','f4'),                  #Antena Time window (ns)
                                        ('t_post','f4'),                 #Antena Time window (ns)
