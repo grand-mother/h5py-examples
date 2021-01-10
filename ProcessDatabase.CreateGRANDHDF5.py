@@ -79,7 +79,7 @@ while(DatabaseRecord!=None):
 
     sryfile= str(Directory)+"/"+str(TaskName)+".sry"
 
-    print(sryfile)
+    print(sryfile,Id)
 
     if(os.path.isfile(sryfile)):
        idftarfile= str(Directory)+"/"+str(TaskName)+".idf.tar.gz"
@@ -104,8 +104,8 @@ while(DatabaseRecord!=None):
        RunID=runid
        EventID=TaskName
        InputFolder="."
-       ZRTG.ZHAiresRawToGRAND(HDF5handle, RunID, EventID, InputFolder,  SimEfieldInfo=True, NLongitudinal=True, ELongitudinal=True, NlowLongitudinal=True, ElowLongitudinal=True, EdepLongitudinal=True, LateralDistribution=True, EnergyDistribution=True)
-       #ZRTG.ZHAiresRawToGRAND(HDF5handle, RunID, EventID, InputFolder,  SimEfieldInfo=True, NLongitudinal=False, ELongitudinal=False, NlowLongitudinal=False, ElowLongitudinal=False, EdepLongitudinal=False, LateralDistribution=False, EnergyDistribution=False)
+       #ZRTG.ZHAiresRawToGRAND(HDF5handle, RunID, EventID, InputFolder,  SimEfieldInfo=True, NLongitudinal=True, ELongitudinal=True, NlowLongitudinal=True, ElowLongitudinal=True, EdepLongitudinal=True, LateralDistribution=True, EnergyDistribution=True)
+       ZRTG.ZHAiresRawToGRAND(HDF5handle, RunID, EventID, InputFolder,  SimEfieldInfo=True, NLongitudinal=False, ELongitudinal=False, NlowLongitudinal=False, ElowLongitudinal=False, EdepLongitudinal=False, LateralDistribution=False, EnergyDistribution=False)
        #cleaning
        cmd="rm "+str(TaskName)+".sry"
        logging.debug("about to run:" + cmd )
