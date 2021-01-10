@@ -74,7 +74,7 @@ while(DatabaseRecord!=None):
   Id=mydatabase.GetIdFromRecord(DatabaseRecord)
   TaskName=mydatabase.GetTasknameFromRecord(DatabaseRecord)
 
-  if(Id>=start and Id <=end and DatabaseStatus=="RunOK" and TaskName=="4649100127264791308946889"):
+  if(Id>=start and Id <=end and DatabaseStatus=="RunOK"):
     logging.debug(str(Id) + " Reading Job " + JobName + " which was in " + DatabaseStatus + " status at " + Directory)
 
     sryfile= str(Directory)+"/"+str(TaskName)+".sry"
@@ -104,8 +104,8 @@ while(DatabaseRecord!=None):
        RunID=runid
        EventID=TaskName
        InputFolder="."
-       #ZRTG.ZHAiresRawToGRAND(HDF5handle, RunID, EventID, InputFolder,  SimEfieldInfo=True, NLongitudinal=True, ELongitudinal=True, NlowLongitudinal=True, ElowLongitudinal=True, EdepLongitudinal=True, LateralDistribution=True, EnergyDistribution=True)
-       ZRTG.ZHAiresRawToGRAND(HDF5handle, RunID, EventID, InputFolder,  SimEfieldInfo=True, NLongitudinal=False, ELongitudinal=False, NlowLongitudinal=False, ElowLongitudinal=False, EdepLongitudinal=False, LateralDistribution=False, EnergyDistribution=False)
+       ZRTG.ZHAiresRawToGRAND(HDF5handle, RunID, EventID, InputFolder,  SimEfieldInfo=True, NLongitudinal=True, ELongitudinal=True, NlowLongitudinal=True, ElowLongitudinal=True, EdepLongitudinal=True, LateralDistribution=True, EnergyDistribution=True)
+       #ZRTG.ZHAiresRawToGRAND(HDF5handle, RunID, EventID, InputFolder,  SimEfieldInfo=True, NLongitudinal=False, ELongitudinal=False, NlowLongitudinal=False, ElowLongitudinal=False, EdepLongitudinal=False, LateralDistribution=False, EnergyDistribution=False)
        #cleaning
        cmd="rm "+str(TaskName)+".sry"
        logging.debug("about to run:" + cmd )
@@ -120,6 +120,10 @@ while(DatabaseRecord!=None):
        os.system(cmd)
 
        cmd="rm antpos.dat"
+       logging.debug("about to run:" + cmd )
+       os.system(cmd)
+
+       cmd="rm "+str(TaskName)+".lgf"
        logging.debug("about to run:" + cmd )
        os.system(cmd)
 
