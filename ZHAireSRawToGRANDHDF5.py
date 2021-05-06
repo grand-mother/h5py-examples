@@ -178,22 +178,25 @@ def ZHAiresRawToGRAND(HDF5handle, RunID, EventID, InputFolder,  SimEfieldInfo=Tr
 
         #Go through the available antennas and CreateAndFill SimEfieldDetectorIndex
         IDs,antx,anty,antz,antt=AiresInfo.GetAntennaInfoFromSry(sryfile[0])
+        
+        if(IDs[0]==-1 and antx[0]==-1 and anty[0]==-1 and antz[0]==-1 and antt[0]==-1):
+           logging.critical("hey, no antennas found in event "+ str(EventID))
 
+        else:      
+          # 
+          antx=np.array(antx, dtype=np.float32)
+          anty=np.array(anty, dtype=np.float32)
+          antz=np.array(antz, dtype=np.float32)
+          antt=np.array(antt, dtype=np.float32)
+          #
+          #ZHAIRES DEPENDENT
+          ending_e = "/a*.trace"
+          tracefiles=glob.glob(InputFolder+ending_e)
 
+          if(len(tracefiles)==0):
+            logging.critical("no trace files found in "+showerdirectory+" ZHAireSHDF5FileWriter cannot continue")
 
-        antx=np.array(antx, dtype=np.float32)
-        anty=np.array(anty, dtype=np.float32)
-        antz=np.array(antz, dtype=np.float32)
-        antt=np.array(antt, dtype=np.float32)
-
-        #ZHAIRES DEPENDENT
-        ending_e = "/a*.trace"
-        tracefiles=glob.glob(InputFolder+ending_e)
-
-        if(len(tracefiles)==0):
-         logging.critical("no trace files found in "+showerdirectory+" ZHAireSHDF5FileWriter cannot continue")
-
-        for ant in tracefiles:
+          for ant in tracefiles:
 
             ant_number = int(ant.split('/')[-1].split('.trace')[0].split('a')[-1]) # index in selected antenna list. this only works if all antenna files are consecutive
 
