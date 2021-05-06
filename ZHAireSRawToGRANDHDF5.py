@@ -178,6 +178,9 @@ def ZHAiresRawToGRAND(HDF5handle, RunID, EventID, InputFolder,  SimEfieldInfo=Tr
 
         #Go through the available antennas and CreateAndFill SimEfieldDetectorIndex
         IDs,antx,anty,antz,antt=AiresInfo.GetAntennaInfoFromSry(sryfile[0])
+
+
+
         antx=np.array(antx, dtype=np.float32)
         anty=np.array(anty, dtype=np.float32)
         antz=np.array(antz, dtype=np.float32)
@@ -469,7 +472,7 @@ if __name__ == '__main__':
 
   elif(mode=="minimal"):
 
-      ZHAiresRawToGRAND(HDF5handle,RunID,EventID,inputfolder,  SimEfieldInfo=False, NLongitudinal=False, ELongitudinal=False, NlowLongitudinal=False, ElowLongitudinal=False, EdepLongitudinal=False, LateralDistribution=False, EnergyDistribution=False)
+      ZHAiresRawToGRAND(HDF5handle,RunID,EventID,inputfolder,  SimEfieldInfo=True, NLongitudinal=False, ELongitudinal=False, NlowLongitudinal=False, ElowLongitudinal=False, EdepLongitudinal=False, LateralDistribution=False, EnergyDistribution=False)
 
 
   else:
